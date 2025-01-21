@@ -12,6 +12,8 @@ import com.nenood.reggie.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -85,6 +87,7 @@ public class SetmealController {
 
     // 根据分类id查询
     @GetMapping("list")
+    @Cacheable(value = "setmealCache", key = "#setmeal.categoryId + '_' + #setmeal.status")
     public R<List<Setmeal>> listSetmeal(Setmeal setmeal) {
 
         LambdaQueryWrapper<Setmeal> queryWrapper = new LambdaQueryWrapper<>();
@@ -97,6 +100,7 @@ public class SetmealController {
 
     // 删除套餐
     @DeleteMapping
+    @CacheEvict(value = "setmealCache", allEntries = true)
     public R<String> deleteSetmeals(@RequestParam("ids") String ids) {
         String[] idArray = ids.split(",");
         List<Long> setmealIds = Arrays.stream(idArray).map(Long::parseLong).collect(Collectors.toList());
