@@ -35,7 +35,11 @@ public class LoginCheckFilter implements Filter {
                 "/front/**",
                 "/common/**",
                 "/user/login",
-                "/user/sendMsg"
+                "/user/sendMsg",
+                "/doc.html",
+                "/swagger-resources/**",
+                "/webjars/**",
+                "v2/api-docs",
         };
 
         // 检查是否需要处理
@@ -62,7 +66,7 @@ public class LoginCheckFilter implements Filter {
             return;
         }
 
-        log.info("已拦截请求: {}", requestURI);
+        log.info("已拦截请求: {}，用户未登录", requestURI);
 
         // 需要处理, 且未登录, 拦截
         response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
